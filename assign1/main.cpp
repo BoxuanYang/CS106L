@@ -25,9 +25,12 @@ const std::string COURSES_NOT_OFFERED_PATH = "student_output/courses_not_offered
  * Hint: Remember what types C++ streams work with?!
  */
 struct Course {
-  /* STUDENT TODO */ title;
-  /* STUDENT TODO */ number_of_units;
-  /* STUDENT TODO */ quarter;
+  /* STUDENT TODO */ 
+  std::string title;
+  /* STUDENT TODO */ 
+  std::string number_of_units;
+  /* STUDENT TODO */ 
+  std::string quarter;
 };
 
 /**
@@ -58,8 +61,45 @@ struct Course {
  * @param filename The name of the file to parse.
  * @param courses  A vector of courses to populate.
  */
-void parse_csv(std::string filename, std::vector<Course> courses) {
+void parse_csv(std::string filename, std::vector<Course> &courses) {
   /* (STUDENT TODO) Your code goes here... */
+  std::ifstream file(filename);
+  if(!file.is_open()){
+    std::cerr << "Error: Could not open file " << filename << std::endl;
+    return;
+  }
+
+  int course_count = 0;
+  std::string line;
+  while(std::getline(file, line)){
+    if(course_count == 0){
+      course_count++;
+      continue;
+    }
+
+    course_count++;
+
+    std::vector<std::string> course_info = split(line, ',');
+
+    Course course;
+    course.title = course_info[0];
+    course.number_of_units = course_info[1];
+    course.quarter = course_info[2];
+
+    /*
+    std::cout << "course info: " 
+    << course.title << ","
+    << course.number_of_units << ","
+    << course.quarter << std::endl;
+    */
+
+    courses.push_back(course);
+  }
+
+ 
+
+
+
 }
 
 /**
@@ -80,8 +120,37 @@ void parse_csv(std::string filename, std::vector<Course> courses) {
  * @param all_courses A vector of all courses gotten by calling `parse_csv`.
  *                    This vector will be modified by removing all offered courses.
  */
-void write_courses_offered(std::vector<Course> all_courses) {
+void write_courses_offered(std::vector<Course> &all_courses) {
   /* (STUDENT TODO) Your code goes here... */
+
+  // 打开文件
+  std::string filePath = "student_output/courses_offered.csv";
+  std::ofstream outFile(filePath);
+  if (!outFile.is_open()) {
+    std::cerr << "Error: Unable to open file " << filePath << std::endl;
+    return;
+  }
+
+
+  // 写入第一行
+  outFile << "Title,Number of Units,Quarter\n";
+
+  std::vector<Course> offered_courses;
+  for(const auto& course : all_courses){
+    std::string course_info = course.title + "," + course.number_of_units + "," + course.quarter + "\n";
+
+    // if offerred, write to file
+    if(course.quarter != "null"){
+      outFile << course_info;
+      offered_courses.push_back(course);
+    }
+    
+  }
+
+  for (auto& course : offered_courses) {
+    delete_elem_from_vector(all_courses, course);
+  }
+
 }
 
 /**
@@ -99,6 +168,29 @@ void write_courses_offered(std::vector<Course> all_courses) {
  */
 void write_courses_not_offered(std::vector<Course> unlisted_courses) {
   /* (STUDENT TODO) Your code goes here... */
+
+  printf("unlisted_courses.size(): %ld\n", unlisted_courses.size());
+
+  // 打开文件
+  std::string filePath = "student_output/courses_not_offered.csv";
+  std::ofstream outFile(filePath);
+  if (!outFile.is_open()) {
+    std::cerr << "Error: Unable to open file " << filePath << std::endl;
+    return;
+  }
+
+
+  // 写入第一行
+  outFile << "Title,Number of Units,Quarter\n";
+
+  std::vector<Course> non_offered_courses;
+  for(const auto& course : unlisted_courses){
+    // 把所有东西写入courses_not_offered.csv
+    std::string course_info = course.title + "," + course.number_of_units + "," + course.quarter + "\n";
+    outFile << course_info;
+  }
+
+  return;
 }
 
 int main() {
