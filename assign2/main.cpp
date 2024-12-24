@@ -16,8 +16,7 @@
 
 #include "utils.h"
 
-std::string kYourName = "STUDENT TODO"; // Don't forget to change this!
-
+std::string kYourName = "Boxuan Yang";
 /**
  * Takes in a file name and returns a set containing all of the applicant names as a set.
  *
@@ -31,6 +30,37 @@ std::string kYourName = "STUDENT TODO"; // Don't forget to change this!
  */
 std::set<std::string> get_applicants(std::string filename) {
   // STUDENT TODO: Implement this function.
+
+  std::set<std::string> applicants;
+
+  std::ifstream file(filename);
+  std::string line;
+  while(std::getline(file, line)){
+    applicants.insert(line);
+  }
+
+  file.close();
+  return applicants;
+  
+}
+
+/*
+Helper function: Given a name of type std::string, return the initial of the name
+*/
+std::string get_initial(const std::string name){
+  std::string initial = "";
+  initial.push_back(name[0]);
+
+  for(size_t i = 1; i < name.size(); i++){
+    if(name[i - 1] == ' '){
+      initial.push_back(name[i]);
+      break;
+    }
+  }
+
+
+
+  return initial;
 }
 
 /**
@@ -43,7 +73,27 @@ std::set<std::string> get_applicants(std::string filename) {
  */
 std::queue<const std::string*> find_matches(std::string name, std::set<std::string>& students) {
   // STUDENT TODO: Implement this function.
+  std::queue<const std::string*> queue;
+
+  std::string initial = get_initial(name);
+  std::cout << "My intial: " << initial << std::endl;
+
+  for(const auto &student : students){
+    std::string student_initial = get_initial(student);
+
+    //std::cout << "Student initial: " << student_initial << std::endl;
+
+    if(student_initial == initial){
+      queue.push(&student);
+    }
+  }
+
+
+
+  return queue;
 }
+
+
 
 /**
  * Takes in a queue of pointers to possible matches and determines the one true match!
@@ -57,7 +107,20 @@ std::queue<const std::string*> find_matches(std::string name, std::set<std::stri
  */
 std::string get_match(std::queue<const std::string*>& matches) {
   // STUDENT TODO: Implement this function.
+
+  if(matches.empty()){
+    printf("NO STUDENT FOUND.\n");
+    std::string strr = "NO MATCHES FOUND.";
+    return strr;
+  }
+
+  const std::string *match = matches.front();
+
+  matches.pop();
+  return *match;
 }
 
 /* #### Please don't modify this call to the autograder! #### */
-int main() { return run_autograder(); }
+int main() { 
+  return run_autograder(); 
+}
