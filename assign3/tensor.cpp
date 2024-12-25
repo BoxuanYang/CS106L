@@ -58,4 +58,10 @@ void tensor::init_data(){
     }
 }
 
-void mem_alloc()
+template<typename T>
+void mem_alloc(T* &buffer, type::backend_type backend, int size){
+    if(backend == type::backend_type::CPU){
+        buffer = (T *) malloc(size * sizeof(T));
+    }
+    return;
+}
