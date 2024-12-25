@@ -21,6 +21,8 @@ tensor::tensor(std::vector<int> shape, type::backend_type backend){
 
     // TODO: Implement this wrapper function for memory allocation
     mem_alloc(buffer, this->backend, this->size);
+    
+    this->buffer = buffer;
 }
 
 
@@ -59,7 +61,7 @@ void tensor::init_data(){
 }
 
 template<typename T>
-void mem_alloc(T* &buffer, type::backend_type backend, int size){
+void mem_alloc(T* &buffer, type::backend_type backend, int64_t size){
     if(backend == type::backend_type::CPU){
         buffer = (T *) malloc(size * sizeof(T));
     }
