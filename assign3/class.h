@@ -3,15 +3,8 @@
 
 #include <vector>
 #include <string>
-// #include "datatype.h"
+#include "datatype.h"
 
-
-namespace type{
-    enum class backend_type {
-        CPU,
-        GPU
-    };
-}
 
 template<typename T>
 class tensor{
